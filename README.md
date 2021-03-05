@@ -1,2 +1,2 @@
-# FullStack-Project
+# fullStack-project
 FullStack launch project
