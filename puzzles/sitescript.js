@@ -32,7 +32,18 @@ app.get('/', (req, res) => {
 
 app.get('/puzzles', (req, res) => {
     const user = req.cookies.username;
-    res.render(__dirname + '/puzzles.ejs', { user: user });
+    MongoClient.connect(url, function (err, client) {
+        if (err) throw err
+        var db = client.db(dbName);
+
+        db.collection('psd').find().toArray(function (err, result) {
+            if (err) throw err
+
+            //ISSUE: ONLY WORKS IF YOU START WITH SITESCRIPT.JS, GOING TO PUZZLES.EJS WITHOUT GOING THROUGH
+            //SITESCRIPT.JS WILL NOT LOAD THE PAGE. 
+            res.render(__dirname + '/puzzles.ejs', { user: user, records: result });
+        })
+    })
 })
 
 app.get('/ranking', (req, res) => {
@@ -51,12 +62,35 @@ app.post('/login', (req, res) => {
     if (username == 'bruh' && password == 'pass') {
         res.cookie('username', 'bruh')
         const user = req.cookies.username;
-        res.render(__dirname + '/puzzles.ejs', { user: 'bruh' });
+        MongoClient.connect(url, function (err, client) {
+            if (err) throw err
+            var db = client.db(dbName);
+
+            db.collection('psd').find().toArray(function (err, result) {
+                if (err) throw err
+
+                //ISSUE: ONLY WORKS IF YOU START WITH SITESCRIPT.JS, GOING TO PUZZLES.EJS WITHOUT GOING THROUGH
+                //SITESCRIPT.JS WILL NOT LOAD THE PAGE. 
+                res.render(__dirname + '/puzzles.ejs', { user: user, records: result });
+            })
+        })
     }
     else {
         res.clearCookie('username');
         res.clearCookie('name');
-        res.render(__dirname + '/puzzles.ejs', { user: null });
+        const user = req.cookies.username;
+        MongoClient.connect(url, function (err, client) {
+            if (err) throw err
+            var db = client.db(dbName);
+
+            db.collection('psd').find().toArray(function (err, result) {
+                if (err) throw err
+
+                //ISSUE: ONLY WORKS IF YOU START WITH SITESCRIPT.JS, GOING TO PUZZLES.EJS WITHOUT GOING THROUGH
+                //SITESCRIPT.JS WILL NOT LOAD THE PAGE. 
+                res.render(__dirname + '/puzzles.ejs', { user: user, records: result });
+            })
+        })
     }
 });
 
