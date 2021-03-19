@@ -19,7 +19,7 @@ app.get('/', (req, res) => {
     MongoClient.connect(url, function (err, client) {
       if (err) throw err
       var db = client.db(dbName);
-      db.collection('psd').find().toArray(function (err, result) {
+        db.collection('psd').find().sort({ score: -1 }).toArray(function (err, result) {
         if (err) throw err
 
         //ISSUE: ONLY WORKS IF YOU START WITH SITESCRIPT.JS, GOING TO PUZZLES.EJS WITHOUT GOING THROUGH
@@ -35,7 +35,7 @@ app.get('/puzzles', (req, res) => {
         if (err) throw err
         var db = client.db(dbName);
 
-        db.collection('psd').find().toArray(function (err, result) {
+        db.collection('psd').find().sort({ score: -1 }).toArray(function (err, result) {
             if (err) throw err
 
             //ISSUE: ONLY WORKS IF YOU START WITH SITESCRIPT.JS, GOING TO PUZZLES.EJS WITHOUT GOING THROUGH
@@ -58,40 +58,36 @@ app.post('/login', (req, res) => {
     res.clearCookie('name');
     const username = req.body.username;
     const password = req.body.password;
-    if (username == 'bruh' && password == 'pass') {
-        res.cookie('username', 'bruh');
-        const user = req.cookies.username;
-        //console.log(req.cookies.username);
-        MongoClient.connect(url, function (err, client) {
+    console.log(username);
+    console.log(password);
+    MongoClient.connect(url, function (err, client) {
+        if (err) throw err
+        var db = client.db(dbName);
+
+        db.collection('psd').find().sort({ score : -1 }).toArray(function (err, result) {
             if (err) throw err
-            var db = client.db(dbName);
-
-            db.collection('psd').find().toArray(function (err, result) {
-                if (err) throw err
-
-                //ISSUE: ONLY WORKS IF YOU START WITH SITESCRIPT.JS, GOING TO PUZZLES.EJS WITHOUT GOING THROUGH
-                //SITESCRIPT.JS WILL NOT LOAD THE PAGE. 
-                res.render(__dirname + '/puzzles.ejs', { user: 'bruh', records: result, scoreError: null });
-            })
+            var i;
+            var newUser;
+            for (i = 0; i < result.length; i++) {
+                if (result[i].username == username && result[i].password == password) {
+                    newUser = result[i].username;
+                }
+            }
+            console.log(newUser);
+            if (newUser != null) {
+                res.cookie('username', newUser);
+                res.render(__dirname + '/puzzles.ejs', { user: newUser, records: result, scoreError: null });
+            }
+            else {
+                res.clearCookie('username');
+                res.clearCookie('name');
+                res.render(__dirname + '/puzzles.ejs', { user: null, records: result, scoreError: 'incorrect username or password' });
+            }
+            //ISSUE: ONLY WORKS IF YOU START WITH SITESCRIPT.JS, GOING TO PUZZLES.EJS WITHOUT GOING THROUGH
+            //SITESCRIPT.JS WILL NOT LOAD THE PAGE. 
+            //res.render(__dirname + '/puzzles.ejs', { user: 'bruh', records: result, scoreError: null });
         })
-    }
-    else {
-        res.clearCookie('username');
-        res.clearCookie('name');
-        //const user = req.cookies.username;
-        MongoClient.connect(url, function (err, client) {
-            if (err) throw err
-            var db = client.db(dbName);
-
-            db.collection('psd').find().toArray(function (err, result) {
-                if (err) throw err
-
-                //ISSUE: ONLY WORKS IF YOU START WITH SITESCRIPT.JS, GOING TO PUZZLES.EJS WITHOUT GOING THROUGH
-                //SITESCRIPT.JS WILL NOT LOAD THE PAGE. 
-                res.render(__dirname + '/puzzles.ejs', { user: null, records: result, scoreError: null });
-            })
-        })
-    }
+    })
 });
 
 app.post('/signup', (req, res) => {
@@ -103,9 +99,9 @@ app.post('/signup', (req, res) => {
         if (err) throw err
         var db = client.db(dbName);
 
-        db.collection('psd').find().toArray(function (err, result) {
+        db.collection('psd').find().sort({ score: -1 }).toArray(function (err, result) {
             if (err) throw err
-
+            db.collection('psd').insertOne({ username: username, password: password, score: 0 });
             //ISSUE: ONLY WORKS IF YOU START WITH SITESCRIPT.JS, GOING TO PUZZLES.EJS WITHOUT GOING THROUGH
             //SITESCRIPT.JS WILL NOT LOAD THE PAGE. 
             res.render(__dirname + '/puzzles.ejs', { user: username, records: result, scoreError: null});
@@ -119,8 +115,10 @@ app.post('/score', (req, res) => {
     MongoClient.connect(url, function (err, client) {
         if (err) throw err
         var db = client.db(dbName);
-
-        db.collection('psd').find().toArray(function (err, result) {
+        if (req.body.answer == 'answer') {
+            db.collection('psd').update({ username: username }, { $inc: { score: 1 } });
+        }
+        db.collection('psd').find().sort({ score: -1 }).toArray(function (err, result) {
             if (err) throw err
 
             //ISSUE: ONLY WORKS IF YOU START WITH SITESCRIPT.JS, GOING TO PUZZLES.EJS WITHOUT GOING THROUGH
@@ -129,9 +127,8 @@ app.post('/score', (req, res) => {
                 res.render(__dirname + '/puzzles.ejs', { user: username, records: result, scoreError: 'please log in' });
             }
             else {
-                //console.log(req.body.answer);
+                console.log(result);
                 if (req.body.answer == 'answer') {
-                    //add to score
                     res.render(__dirname + '/puzzles.ejs', { user: username, records: result, scoreError: 'correct!' });
                 }
                 else {
@@ -143,5 +140,5 @@ app.post('/score', (req, res) => {
 });
 
 app.listen(port, () => {
-    console.log(`Example app listening at http://localhost:${port}`)
+    console.log(`App listening at http://localhost:${port}`)
 });
