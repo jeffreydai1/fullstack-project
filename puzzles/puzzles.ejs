@@ -81,13 +81,7 @@
                 </tbody>
               </table>
     </section>
-
-    <section id="your score" , class="section--ranking">
-        <h4>Your Score</h4>
-        </div>
-
-        </div>
-    </section>
+    <h2>Log In<h2>
     <form action="/login" method="post">
         <div>
             <label>Username:</label>
@@ -101,6 +95,26 @@
             <input type="submit" value="Log In" />
         </div>
     </form>
+    <h2>Sign Up<h2> 
+    <form action="/signup" method="post">
+        <div>
+            <label>Username:</label>
+            <input type="text" name="username" />
+        </div>
+        <div>
+            <label>Password:</label>
+            <input type="password" name="password" />
+        </div>
+        <div>
+            <input type="submit" value="Log In" />
+        </div>
+    </form>
      <h2><%= user %></h2>
+    <section id="your score" , class="section--ranking">
+        <h4>Your Score</h4>
+        </div>
+
+        </div>
+    </section>
 </body>
 </html>

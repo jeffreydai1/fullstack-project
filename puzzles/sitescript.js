@@ -15,17 +15,16 @@ const url = 'mongodb+srv://ourgroup:fullstackatbrown@cluster0.urser.mongodb.net/
 const dbName = 'puzzlesitedata'
 
 app.get('/', (req, res) => {
-    const user = req.cookies.username;
+    res.clearCookie('username');
     MongoClient.connect(url, function (err, client) {
       if (err) throw err
       var db = client.db(dbName);
-
       db.collection('psd').find().toArray(function (err, result) {
         if (err) throw err
 
         //ISSUE: ONLY WORKS IF YOU START WITH SITESCRIPT.JS, GOING TO PUZZLES.EJS WITHOUT GOING THROUGH
         //SITESCRIPT.JS WILL NOT LOAD THE PAGE. 
-        res.render(__dirname + '/puzzles.ejs', { user: user, records: result });
+        res.render(__dirname + '/puzzles.ejs', { user: null, records: result });
       })
     })
 })
@@ -47,7 +46,7 @@ app.get('/puzzles', (req, res) => {
 })
 
 app.get('/ranking', (req, res) => {
-    res.render(__dirname + '/ranking.ejs', );
+    res.render(__dirname + '/ranking.ejs');
 })
 
 app.get('/your%20score', (req, res) => {
@@ -60,8 +59,9 @@ app.post('/login', (req, res) => {
     const username = req.body.username;
     const password = req.body.password;
     if (username == 'bruh' && password == 'pass') {
-        res.cookie('username', 'bruh')
+        res.cookie('username', 'bruh');
         const user = req.cookies.username;
+        //console.log(req.cookies.username);
         MongoClient.connect(url, function (err, client) {
             if (err) throw err
             var db = client.db(dbName);
@@ -71,14 +71,14 @@ app.post('/login', (req, res) => {
 
                 //ISSUE: ONLY WORKS IF YOU START WITH SITESCRIPT.JS, GOING TO PUZZLES.EJS WITHOUT GOING THROUGH
                 //SITESCRIPT.JS WILL NOT LOAD THE PAGE. 
-                res.render(__dirname + '/puzzles.ejs', { user: user, records: result });
+                res.render(__dirname + '/puzzles.ejs', { user: 'bruh', records: result });
             })
         })
     }
     else {
         res.clearCookie('username');
         res.clearCookie('name');
-        const user = req.cookies.username;
+        //const user = req.cookies.username;
         MongoClient.connect(url, function (err, client) {
             if (err) throw err
             var db = client.db(dbName);
@@ -88,12 +88,31 @@ app.post('/login', (req, res) => {
 
                 //ISSUE: ONLY WORKS IF YOU START WITH SITESCRIPT.JS, GOING TO PUZZLES.EJS WITHOUT GOING THROUGH
                 //SITESCRIPT.JS WILL NOT LOAD THE PAGE. 
-                res.render(__dirname + '/puzzles.ejs', { user: user, records: result });
+                res.render(__dirname + '/puzzles.ejs', { user: null, records: result });
             })
         })
     }
 });
 
+app.post('/signup', (req, res) => {
+    res.clearCookie('username');
+    const username = req.body.username;
+    const password = req.body.password;
+    res.cookie(username, password);
+    MongoClient.connect(url, function (err, client) {
+        if (err) throw err
+        var db = client.db(dbName);
+
+        db.collection('psd').find().toArray(function (err, result) {
+            if (err) throw err
+
+            //ISSUE: ONLY WORKS IF YOU START WITH SITESCRIPT.JS, GOING TO PUZZLES.EJS WITHOUT GOING THROUGH
+            //SITESCRIPT.JS WILL NOT LOAD THE PAGE. 
+            res.render(__dirname + '/puzzles.ejs', { user: username, records: result });
+        })
+    })
+
+});
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`)
 })
