@@ -10,8 +10,34 @@
     <header>
         <a href="puzzles">puzzles</a>
         <a href="ranking">ranking</a>
-        <a href="your score">score</a>
     </header>
+    <section id="ranking" , class="section--ranking">
+        <h4>Ranking</h4>
+        </div>
 
+        </div>
+        <table class="table table-striped table-primary">
+                <thead>
+                  <tr>
+                    <th>Username</th>
+                    <th>Score</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <%if (records.length >0){ %>
+                  <% records.forEach(function(row){ %>
+                  <tr>
+                    <td><%= row.username %></td>
+                    <td><%= row.score %></td>
+                  </tr>
+                  <% })}else{ %>
+                    <tr>
+                        <td colspan="6">No Record Found</td>
+
+                      </tr>
+                    <% } %>
+                </tbody>
+              </table>
+    </section>
 </body>
 </html>

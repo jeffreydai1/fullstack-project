@@ -10,22 +10,20 @@
     <header>
         <a href="puzzles">puzzles</a>
         <a href="ranking">ranking</a>
-        <a href="your score">score</a>
     </header>
     <section class="section--homes">
         <img class="profile" height="200" src="puzzles2.jpg">
         <div>
-            <h1>Today's puzzles</h1>
+            <h1>Today's Very Difficult Puzzle</h1>
             <a href="https://www.arkadium.com/free-online-games/word/"> More puzzles to solve!</a>
-            <h2> Design by </h2>
         </div>
         <img class="profile" height="200" src="puzzle.jpg">
     </section>
-    <section id="today's puzzles" class="section--puzzles">
-        <h4 style="margin:auto">Earn a score by solving a puzzle</h4>
-    </section>
     <div class='form'>
-     <h2>"answer" is the correct answer<h2>
+    <a style="color:red;"><%= scoreError %></a>
+    <h4 style="margin:auto">Earn a score by solving a puzzle</h4>
+    <br></br>
+    <h2>"answer" is the correct answer<h2>
     <form action="/score" method="post">
         <div>
             <label>Answer:</label>
@@ -35,40 +33,9 @@
             <input type="submit" value="Submit" />
         </div>
     </form>
-    <h2><%= scoreError %></h2>
     </div>
-    <!--
-    <section class="cards--horizontal" style=" background-color: rgb(197, 228, 238)">
-        <div style="margin-left: 40px; margin-right: 40px">
-            <h3>UI Design</h3>
-            <div>
-                Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut
-                laoreet dolore magna aliquam erat volutpat.
-            </div>
-        </div>
-    </section>
-    <section class="cards--horizontal" style="margin-top: 40px; background-color:rgb(173, 194, 207)">
-        <div style="margin-left: 40px; margin-right: 40px">
-            <h3>SWE</h3>
-            <div>
-                Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut
-                laoreet dolore magna aliquam erat volutpat.
-            </div>
-        </div>
-    </section>
-    <section class="cards--horizontal" style="margin-top: 40px; background-color:rgb(126, 156, 202)">
-        <div style="margin-left: 40px; margin-right: 40px">
-            <h3>Web Development</h3>
-            <div>
-                Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut
-                laoreet dolore magna aliquam erat volutpat.
-            </div>
-        </div>
-        </div>
-    </section>
-    -->
     <section id="ranking" , class="section--ranking">
-        <h4>Ranking</h4>
+        <h4>Top 5 Ranking</h4>
         </div>
 
         </div>
@@ -95,13 +62,18 @@
                 </tbody>
               </table>
     </section>
-     <h2><%= user %></h2>
+             <% if (user){ %>
     <section id="your score" , class="section--ranking">
         <h4>Your Score</h4>
+
+            <h2><%= user %>: <%= userScore%></h2>
+
+        
         </div>
 
         </div>
     </section>
+    <%}%>
          <div class='form'>
     <h2>Log In<h2>
     <form action="/login" method="post">
@@ -130,7 +102,7 @@
             <input type="password" name="password" />
         </div>
         <div>
-            <input type="submit" value="Log In" />
+            <input type="submit" value="Sign Up" />
         </div>
     </form>
     </div>
