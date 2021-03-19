@@ -24,6 +24,20 @@
     <section id="today's puzzles" class="section--puzzles">
         <h4 style="margin:auto">Earn a score by solving a puzzle</h4>
     </section>
+    <div class='form'>
+     <h2>"answer" is the correct answer<h2>
+    <form action="/score" method="post">
+        <div>
+            <label>Answer:</label>
+            <input type="answer" name="answer" />
+        </div>
+        <div>
+            <input type="submit" value="Submit" />
+        </div>
+    </form>
+    <h2><%= scoreError %></h2>
+    </div>
+    <!--
     <section class="cards--horizontal" style=" background-color: rgb(197, 228, 238)">
         <div style="margin-left: 40px; margin-right: 40px">
             <h3>UI Design</h3>
@@ -52,7 +66,7 @@
         </div>
         </div>
     </section>
-
+    -->
     <section id="ranking" , class="section--ranking">
         <h4>Ranking</h4>
         </div>
@@ -81,6 +95,14 @@
                 </tbody>
               </table>
     </section>
+     <h2><%= user %></h2>
+    <section id="your score" , class="section--ranking">
+        <h4>Your Score</h4>
+        </div>
+
+        </div>
+    </section>
+         <div class='form'>
     <h2>Log In<h2>
     <form action="/login" method="post">
         <div>
@@ -95,6 +117,8 @@
             <input type="submit" value="Log In" />
         </div>
     </form>
+    </div>
+     <div class='form'>
     <h2>Sign Up<h2> 
     <form action="/signup" method="post">
         <div>
@@ -109,12 +133,6 @@
             <input type="submit" value="Log In" />
         </div>
     </form>
-     <h2><%= user %></h2>
-    <section id="your score" , class="section--ranking">
-        <h4>Your Score</h4>
-        </div>
-
-        </div>
-    </section>
+    </div>
 </body>
 </html>

@@ -24,7 +24,7 @@ app.get('/', (req, res) => {
 
         //ISSUE: ONLY WORKS IF YOU START WITH SITESCRIPT.JS, GOING TO PUZZLES.EJS WITHOUT GOING THROUGH
         //SITESCRIPT.JS WILL NOT LOAD THE PAGE. 
-        res.render(__dirname + '/puzzles.ejs', { user: null, records: result });
+          res.render(__dirname + '/puzzles.ejs', { user: null, records: result, scoreError: null });
       })
     })
 })
@@ -40,7 +40,7 @@ app.get('/puzzles', (req, res) => {
 
             //ISSUE: ONLY WORKS IF YOU START WITH SITESCRIPT.JS, GOING TO PUZZLES.EJS WITHOUT GOING THROUGH
             //SITESCRIPT.JS WILL NOT LOAD THE PAGE. 
-            res.render(__dirname + '/puzzles.ejs', { user: user, records: result });
+            res.render(__dirname + '/puzzles.ejs', { user: user, records: result, scoreError: null });
         })
     })
 })
@@ -71,7 +71,7 @@ app.post('/login', (req, res) => {
 
                 //ISSUE: ONLY WORKS IF YOU START WITH SITESCRIPT.JS, GOING TO PUZZLES.EJS WITHOUT GOING THROUGH
                 //SITESCRIPT.JS WILL NOT LOAD THE PAGE. 
-                res.render(__dirname + '/puzzles.ejs', { user: 'bruh', records: result });
+                res.render(__dirname + '/puzzles.ejs', { user: 'bruh', records: result, scoreError: null });
             })
         })
     }
@@ -88,7 +88,7 @@ app.post('/login', (req, res) => {
 
                 //ISSUE: ONLY WORKS IF YOU START WITH SITESCRIPT.JS, GOING TO PUZZLES.EJS WITHOUT GOING THROUGH
                 //SITESCRIPT.JS WILL NOT LOAD THE PAGE. 
-                res.render(__dirname + '/puzzles.ejs', { user: null, records: result });
+                res.render(__dirname + '/puzzles.ejs', { user: null, records: result, scoreError: null });
             })
         })
     }
@@ -108,11 +108,40 @@ app.post('/signup', (req, res) => {
 
             //ISSUE: ONLY WORKS IF YOU START WITH SITESCRIPT.JS, GOING TO PUZZLES.EJS WITHOUT GOING THROUGH
             //SITESCRIPT.JS WILL NOT LOAD THE PAGE. 
-            res.render(__dirname + '/puzzles.ejs', { user: username, records: result });
+            res.render(__dirname + '/puzzles.ejs', { user: username, records: result, scoreError: null});
         })
     })
 
 });
+
+app.post('/score', (req, res) => {
+    const username = req.cookies.username;
+    MongoClient.connect(url, function (err, client) {
+        if (err) throw err
+        var db = client.db(dbName);
+
+        db.collection('psd').find().toArray(function (err, result) {
+            if (err) throw err
+
+            //ISSUE: ONLY WORKS IF YOU START WITH SITESCRIPT.JS, GOING TO PUZZLES.EJS WITHOUT GOING THROUGH
+            //SITESCRIPT.JS WILL NOT LOAD THE PAGE. 
+            if (username == null) {
+                res.render(__dirname + '/puzzles.ejs', { user: username, records: result, scoreError: 'please log in' });
+            }
+            else {
+                //console.log(req.body.answer);
+                if (req.body.answer == 'answer') {
+                    //add to score
+                    res.render(__dirname + '/puzzles.ejs', { user: username, records: result, scoreError: 'correct!' });
+                }
+                else {
+                    res.render(__dirname + '/puzzles.ejs', { user: username, records: result, scoreError: 'incorrect answer' });
+                }
+            }    
+        })
+    })
+});
+
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`)
-})
+});
