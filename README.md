@@ -1,10 +1,10 @@
 ## fullstack-project
 
-#Structure of the repository:
+# Structure of the repository:
 puzzles contains all the actual code
 
 
-#To run the website:
+# To run the website:
 <p>
 first make sure you have Node.js installed. To check, run:
 ```
@@ -25,8 +25,8 @@ You should see the home page. To interact with the website:
 Since the database the website uses to store user information is a mongoDB cloud database, you will see the usernames and scores of other people who have used the website before! 
 </p>
 
-#Member Contributions
+# Member Contributions
 Kevin - I worked on setting up and connecting a database to the website. This includes creating the functionality for getting information from the data base such as login information and displaying score rankings.
 
 
-#Known bugs: 
+# Known bugs: 
