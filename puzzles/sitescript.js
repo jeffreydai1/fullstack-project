@@ -1,4 +1,3 @@
-//var passport = require('passport'), LocalStrategy = require('passport-local').Strategy;
 const express = require('express')
 const app = express();
 const port = 3000;
@@ -15,15 +14,14 @@ const url = 'mongodb+srv://ourgroup:fullstackatbrown@cluster0.urser.mongodb.net/
 const dbName = 'puzzlesitedata'
 
 app.get('/', (req, res) => {
+    //clear cookie
     res.clearCookie('username');
+    //connect to mongo and display page/rankings
     MongoClient.connect(url, function (err, client) {
       if (err) throw err
       var db = client.db(dbName);
         db.collection('psd').find().sort({ score: -1 }).toArray(function (err, result) {
         if (err) throw err
-
-        //ISSUE: ONLY WORKS IF YOU START WITH SITESCRIPT.JS, GOING TO PUZZLES.EJS WITHOUT GOING THROUGH
-        //SITESCRIPT.JS WILL NOT LOAD THE PAGE. 
             result.length = 5;
             res.render(__dirname + '/puzzles.ejs', { user: null, records: result, scoreError: null, userScore: null });
       })
@@ -31,18 +29,17 @@ app.get('/', (req, res) => {
 })
 
 app.get('/puzzles', (req, res) => {
+    //get current user
     const user = req.cookies.username;
+    //connect to mongo
     MongoClient.connect(url, function (err, client) {
         if (err) throw err
         var db = client.db(dbName);
-
         db.collection('psd').find().sort({ score: -1 }).toArray(function (err, result) {
             if (err) throw err
-
-            //ISSUE: ONLY WORKS IF YOU START WITH SITESCRIPT.JS, GOING TO PUZZLES.EJS WITHOUT GOING THROUGH
-            //SITESCRIPT.JS WILL NOT LOAD THE PAGE. 
             var i;
             var score;
+            //find score to display
             for (i = 0; i < result.length; i++) {
                 if (result[i].username == user) {
                     score = result[i].score;
@@ -55,30 +52,30 @@ app.get('/puzzles', (req, res) => {
 })
 
 app.get('/ranking', (req, res) => {
+    //connect to mongo and show full rankings
     MongoClient.connect(url, function (err, client) {
         if (err) throw err
         var db = client.db(dbName);
         db.collection('psd').find().sort({ score: -1 }).toArray(function (err, result) {
             if (err) throw err
-
-            //ISSUE: ONLY WORKS IF YOU START WITH SITESCRIPT.JS, GOING TO PUZZLES.EJS WITHOUT GOING THROUGH
-            //SITESCRIPT.JS WILL NOT LOAD THE PAGE. 
             res.render(__dirname + '/ranking.ejs', { user: null, records: result, scoreError: null, userScore: null });
         })
     })
 })
 
 app.post('/login', (req, res) => {
+    //clear cookies and get new user/pass
     res.clearCookie('username');
     res.clearCookie('name');
     const username = req.body.username;
     const password = req.body.password;
+    //connect to mongo
     MongoClient.connect(url, function (err, client) {
         if (err) throw err
         var db = client.db(dbName);
-
         db.collection('psd').find().sort({ score : -1 }).toArray(function (err, result) {
             if (err) throw err
+            //check if user and password are valid combo
             var i;
             var newUser;
             for (i = 0; i < result.length; i++) {
@@ -86,6 +83,7 @@ app.post('/login', (req, res) => {
                     newUser = result[i].username;
                 }
             }
+            //get score for user display
             i = 0;
             var score;
             for (i = 0; i < result.length; i++) {
@@ -104,24 +102,23 @@ app.post('/login', (req, res) => {
                 result.length = 5;
                 res.render(__dirname + '/puzzles.ejs', { user: null, records: result, scoreError: 'incorrect username or password', userScore: null });
             }
-            //ISSUE: ONLY WORKS IF YOU START WITH SITESCRIPT.JS, GOING TO PUZZLES.EJS WITHOUT GOING THROUGH
-            //SITESCRIPT.JS WILL NOT LOAD THE PAGE. 
-            //res.render(__dirname + '/puzzles.ejs', { user: 'bruh', records: result, scoreError: null });
         })
     })
 });
 
 app.post('/signup', (req, res) => {
+    //clear cookies and get user/pass
     res.clearCookie('username');
     const username = req.body.username;
     const password = req.body.password;
     res.cookie(username, password);
+    //connect to mongo
     MongoClient.connect(url, function (err, client) {
         if (err) throw err
         var db = client.db(dbName);
-
         db.collection('psd').find().sort({ score: -1 }).toArray(function (err, result) {
             if (err) throw err
+            //check if username is already registered.
             var i;
             var name;
             for (i = 0; i < result.length; i++) {
@@ -138,32 +135,31 @@ app.post('/signup', (req, res) => {
                 result.length = 5;
                 res.render(__dirname + '/puzzles.ejs', { user: username, records: result, scoreError: 'Username already exists.', userScore: null });
             }
-            //ISSUE: ONLY WORKS IF YOU START WITH SITESCRIPT.JS, GOING TO PUZZLES.EJS WITHOUT GOING THROUGH
-            //SITESCRIPT.JS WILL NOT LOAD THE PAGE. 
-
         })
     })
 
 });
 
 app.post('/score', (req, res) => {
+    //get current user
     const username = req.cookies.username;
+    //connect to mongo
     MongoClient.connect(url, function (err, client) {
         if (err) throw err
         var db = client.db(dbName);
+        //if answer is right, increment score.
         if (req.body.answer == 'answer') {
             db.collection('psd').update({ username: username }, { $inc: { score: 1 } });
         }
         db.collection('psd').find().sort({ score: -1 }).toArray(function (err, result) {
             if (err) throw err
-
-            //ISSUE: ONLY WORKS IF YOU START WITH SITESCRIPT.JS, GOING TO PUZZLES.EJS WITHOUT GOING THROUGH
-            //SITESCRIPT.JS WILL NOT LOAD THE PAGE. 
+            //make sure they are logged in
             if (username == null) {
                 result.length = 5;
                 res.render(__dirname + '/puzzles.ejs', { user: username, records: result, scoreError: 'please log in', userScore: null });
             }
             else {
+                //get score to display for user
                 var i;
                 var score;
                 for (i = 0; i < result.length; i++) {
