@@ -4,13 +4,13 @@ FullStack launch project
 To run the website:
 first make sure you have Node.js installed. To check, run:
 ```
-$node -v
+$ node -v
 ```
 If you don't have Node.js installed, download it here: https://nodejs.org/en/download/
 
 Once Node.js is installed, navigate to the puzzles directory, then run
 ```
-$node sitescript.js
+$ node sitescript.js
 ```
 Then in your web browser, go to this link: http://localhost:3000
 
