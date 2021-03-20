@@ -1,7 +1,7 @@
 # fullstack-project
 
 ## Structure of the repository:
-puzzles contains all the actual code
+puzzles contains all the actual code, inside puzzles are two respositories, node_modules which contains all the modules we use and statics which contains the images displayed on the homepage. 
 
 
 ## To run the website:
