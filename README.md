@@ -26,7 +26,9 @@ Since the database the website uses to store user information is a mongoDB cloud
 </p>
 
 ## Member Contributions
-Kevin - I worked on setting up and connecting a database to the website. This includes creating the functionality for getting information from the data base such as login information and displaying score rankings.
+Kevin - worked on setting up and connecting a database to the website. This includes creating the functionality for getting information from the data base such as login information and displaying score rankings.
+Jeffrey- worked on the back end handling get+post requests as well as sending relevant data from the site script to the ejs files.
+Qinan - worked on front-end, getting data from the backend displayed onto the page through ejs/html and styled appropriately in CSS.
 
 
 ## Known bugs: 
